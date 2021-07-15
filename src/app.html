@@ -1,12 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		%svelte.head%
-	</head>
-	<body>
-		<div id="svelte">%svelte.body%</div>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.png" />
+    <title>OlymPic</title>
+
+    <meta name="title" content="OlymPic" />
+    <meta name="description" content="International Meme Olympiad" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:url" content="https://olym-pic.vercel.app" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OlymPic" />
+    <meta property="og:description" content="International Meme Olympiad" />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/narze/timelapse/master/projects/olym-pic_home.png"
+    />
+    <meta name="twitter:title" content="OlymPic" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://raw.githubusercontent.com/narze/timelapse/master/projects/olym-pic_home.png"
+    />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JR8Z8M5YB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-5JR8Z8M5YB');
+    </script>
+
+    %svelte.head%
+  </head>
+  <body>
+    <div id="svelte">%svelte.body%</div>
+  </body>
 </html>

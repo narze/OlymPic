@@ -1,8 +1,9 @@
-<script lang="typescript">
-  import { onMount, tick } from 'svelte';
+<script lang="ts">
+  import { onMount } from 'svelte';
   import { tw } from 'twind';
   import Konva from 'konva';
   import { Facebook, Twitter } from 'svelte-share-buttons-component';
+  import Kofi from '../lib/Kofi.svelte';
   import defaultBackground from '../../static/background.jpg';
   import defaultPerson from '../../static/person.png';
 
@@ -381,6 +382,8 @@
     <Twitter class={tw`h-10 w-10`} text="" {url} />
   </div>
 </main>
+
+<Kofi name="narze" />
 
 <style>
   @font-face {
