@@ -29,8 +29,9 @@
       img.onload = () => {
         this.image.image(img);
         this.layer.batchDraw();
-        personImageTr = addTransformer(this.layer, this.image, false);
       };
+      personImageTr?.remove();
+      personImageTr = addTransformer(this.layer, this.image, false);
       img.src = url;
     }
   }
@@ -293,13 +294,15 @@
     personImageTr.hide();
 
     const dataURL = stage.toDataURL({ pixelRatio: 3 });
-    downloadURI(dataURL, 'OlymPic-download.png');
+    downloadURI(dataURL, 'OlymPic-download.jpg');
 
-    titleTextTr.show();
-    quoteTextTr.show();
-    nameTextTr.show();
-    detailsTextTr.show();
-    personImageTr.show();
+    setTimeout(() => {
+      titleTextTr.show();
+      quoteTextTr.show();
+      nameTextTr.show();
+      detailsTextTr.show();
+      personImageTr.show();
+    }, 300);
   }
 </script>
 
