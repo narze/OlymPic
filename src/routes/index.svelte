@@ -2,12 +2,42 @@
 	import { onMount, tick } from 'svelte';
 	import { tw } from 'twind';
 	import Konva from 'konva';
+	import { Facebook, Twitter } from 'svelte-share-buttons-component';
 	import defaultBackground from '../../static/background.jpg';
+
+	const url = 'https://olym-pic.vercel.app';
 
 	const sceneWidth = 1080;
 	const sceneHeight = 1080;
 	let stage;
-	let previewImage;
+	let previewImage: (event: Event, imageId: 'background' | 'person') => void;
+
+	class ImageSwitcher {
+		constructor(private image: Konva.Image, private layer: Konva.Layer) {}
+		switchImage(url: string) {
+			const img = new Image();
+			img.onload = () => {
+				this.image.image(img);
+				this.layer.draw();
+			};
+			img.src = url;
+		}
+	}
+	class TitleSwitcher {
+		constructor(private text: string, private layer: Konva.Layer) {
+			this.group = new Konva.Group();
+			this.rect = new Konva.Rect({
+				draggable: true,
+				opacity: 0
+			});
+			this.text = new Konva.Text({
+				text
+			});
+			this.group.add(rect);
+			this.group.add(text);
+			layer.add(group);
+		}
+	}
 
 	onMount(async () => {
 		stage = new Konva.Stage({
@@ -15,21 +45,27 @@
 			width: sceneWidth,
 			height: sceneHeight
 		});
-		const layer = new Konva.Layer({ fill: '#444444' });
+
+		const layer = new Konva.Layer({ fill: '#eeeeee' });
 		stage.add(layer);
 
-		const img = new Image();
-		img.onload = () => {
-			const bg = new Konva.Image({
-				image: img,
-				width: sceneWidth,
-				height: sceneHeight
-			});
-			// bg.zIndex(100);
-			layer.add(bg);
-			layer.draw();
-		};
-		img.src = '/static/background.jpg';
+		// Background image
+		const backgroundImage = new Konva.Image({
+			image: undefined as any,
+			width: sceneWidth,
+			height: sceneHeight
+		});
+		layer.add(backgroundImage);
+		const backgroundSwitcher = new ImageSwitcher(backgroundImage, layer);
+		backgroundSwitcher.switchImage('/static/background.jpg');
+
+		// Person image
+		const personImage = new Konva.Image({
+			image: undefined as any,
+			draggable: true
+		});
+		layer.add(personImage);
+		const personSwitcher = new ImageSwitcher(personImage, layer);
 
 		const addText = (newText: string) => {
 			const rectCanvas = new Konva.Rect({});
@@ -76,21 +112,13 @@
 		};
 		window.addEventListener('resize', eventResizeHandler);
 
-		previewImage = (e, imgId) => {
-			// const preview: HTMLElement = document.getElementById(imgId);
-			// personImage.src = URL.createObjectURL(e.target.files[0]);
-			addImage(URL.createObjectURL(e.target.files[0]), imgId);
-			// preview.onload = () => URL.revokeObjectURL(preview.src);
+		previewImage = (e, imageId) => {
+			const input = e.target as HTMLInputElement;
+			const url = URL.createObjectURL(input.files[0]);
+			const switcher = imageId === 'background' ? backgroundSwitcher : personSwitcher;
+			switcher.switchImage(url);
 		};
-
-		// await tick();
-		// layer.draw();
 		eventResizeHandler();
-
-		// setTimeout(() => {
-		// 	// eventResizeHandler();
-		// 	layer.draw();
-		// }, 1);
 	});
 
 	let title: string = 'International Farming Olympiad';
@@ -113,7 +141,7 @@
 			<img class={tw`absolute top-0 z-10`} id="person" height="300" alt="" />
 			<img class={tw`absolute top-0`} id="background" height="300" alt="" /> -->
 		</div>
-		<div class={tw`w-1/2 flex-col items-start`}>
+		<div class={tw`w-1/2 pl-4 flex-col items-start`}>
 			<div class={tw`my-2`}>
 				<label class="block text-sm font-medium text-gray-700" for="background">รูปพื้นหลัง</label>
 				<div class="mt-1 flex">
@@ -166,6 +194,11 @@
 				/>
 			</div>
 		</div>
+	</div>
+
+	<div class={tw`fixed bottom-4 right-4 z-20 sm:hidden`}>
+		<Facebook class={tw`h-10 w-10`} {url} />
+		<Twitter class={tw`h-10 w-10`} text="" {url} />
 	</div>
 </main>
 
