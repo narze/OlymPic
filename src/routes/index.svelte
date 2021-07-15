@@ -3,7 +3,6 @@
 	import { tw } from 'twind';
 	import Konva from 'konva';
 	import { Facebook, Twitter } from 'svelte-share-buttons-component';
-	import defaultBackground from '../../static/background.jpg';
 
 	const url = 'https://olym-pic.vercel.app';
 
@@ -11,6 +10,7 @@
 	const sceneHeight = 1080;
 	let stage;
 	let previewImage: (event: Event, imageId: 'background' | 'person') => void;
+	let previewText: (newText: string, textType: 'title' | 'quote' | 'nickname' | 'details') => void;
 
 	class ImageSwitcher {
 		constructor(private image: Konva.Image, private layer: Konva.Layer) {}
@@ -18,7 +18,7 @@
 			const img = new Image();
 			img.onload = () => {
 				this.image.image(img);
-				this.layer.draw();
+				this.layer.batchDraw();
 			};
 			img.src = url;
 		}
@@ -67,42 +67,75 @@
 		layer.add(personImage);
 		const personSwitcher = new ImageSwitcher(personImage, layer);
 
-		const addText = (newText: string) => {
-			const rectCanvas = new Konva.Rect({});
-			const textCanvas = new Konva.Text({});
-			layer.add(rectCanvas);
-			layer.add(textCanvas);
-			layer.draw();
-		};
+		// Title
+		const titleText = new Konva.Text({
+			fontSize: 64,
+			fontFamily: 'ThaiSansNeue',
+			fontStyle: 'bold',
+			fill: '#ffa',
+			text: quote,
+			stroke: '#000',
+			strokeWidth: 3,
+			shadowColor: 'white',
+			shadowBlur: 20,
+			shadowOffset: { x: 0, y: 0 },
+			shadowOpacity: 1,
+			draggable: true
+		});
+		layer.add(titleText);
 
-		const addImage = (imgPath: string, imgId: string) => {
-			const img = new Image();
-			img.src = imgPath;
-			img.onload = () => {
-				const imgCanvas = new Konva.Image({
-					id: imgId,
-					image: img,
-					draggable: true
-				});
-				layer.add(imgCanvas);
-				layer.draw();
-			};
-		};
+		// Quote
+		const quoteText = new Konva.Text({
+			fontSize: 120,
+			fontFamily: 'ThaiSansNeue',
+			fontStyle: 'bold',
+			fill: '#ffa',
+			text: quote,
+			stroke: '#000',
+			strokeWidth: 3,
+			shadowColor: 'white',
+			shadowBlur: 20,
+			shadowOffset: { x: 0, y: 0 },
+			shadowOpacity: 1,
+			draggable: true
+		});
+		layer.add(quoteText);
 
-		// const personImage = new Image();
-		// personImage.onload = () => {
-		// 	const person = new Konva.Image({
-		// 		image: personImage,
-		// 		width: sceneWidth,
-		// 		height: sceneHeight
-		// 	});
-		// 	person.zIndex(100);
-		// 	layer.add(person);
-		// };
-		// personImage.src = '/static/background.jpg';
+		// Name
+		const nameText = new Konva.Text({
+			fontSize: 200,
+			fontFamily: 'ThaiSansNeue',
+			fontStyle: 'bold',
+			fill: '#ffa',
+			text: nickname,
+			stroke: '#000',
+			strokeWidth: 3,
+			shadowColor: 'white',
+			shadowBlur: 20,
+			shadowOffset: { x: 0, y: 0 },
+			shadowOpacity: 1,
+			draggable: true
+		});
+		layer.add(nameText);
+
+		// Details
+		const detailsText = new Konva.Text({
+			fontSize: 64,
+			fontFamily: 'ThaiSansNeue',
+			fontStyle: 'bold',
+			fill: '#ffa',
+			text: nickname,
+			stroke: '#000',
+			strokeWidth: 3,
+			shadowColor: 'white',
+			shadowBlur: 20,
+			shadowOffset: { x: 0, y: 0 },
+			shadowOpacity: 1,
+			draggable: true
+		});
+		layer.add(detailsText);
 
 		const eventResizeHandler = () => {
-			console.log('eventresizehandler');
 			const container = document.getElementById('canvasParent');
 			const c_width = container.offsetWidth;
 			const scale = c_width / sceneWidth;
@@ -118,6 +151,28 @@
 			const switcher = imageId === 'background' ? backgroundSwitcher : personSwitcher;
 			switcher.switchImage(url);
 		};
+		previewText = (newText, textType) => {
+			if (textType === 'title') {
+				const textShape = titleText;
+				textShape.text(newText);
+				layer.batchDraw();
+			}
+			if (textType === 'quote') {
+				const textShape = quoteText;
+				textShape.text(newText);
+				layer.batchDraw();
+			}
+			if (textType === 'nickname') {
+				const textShape = nameText;
+				textShape.text(newText);
+				layer.batchDraw();
+			}
+			if (textType === 'details') {
+				const textShape = detailsText;
+				textShape.text(newText);
+				layer.batchDraw();
+			}
+		};
 		eventResizeHandler();
 	});
 
@@ -126,6 +181,11 @@
 	let nickname: string = 'ตู่';
 	let details: string =
 		'พลเอก ประหยัด จันทร์อะไร\nโรงเรียน xxxxxxxxxx\nผู้แทนประเทศไทย วิชาทหาร ประจำปี 2564';
+
+	$: previewText?.(title, 'title');
+	$: previewText?.(quote, 'quote');
+	$: previewText?.(nickname, 'nickname');
+	$: previewText?.(details, 'details');
 </script>
 
 <main class={tw`h-screen flex flex-col items-center justify-center`}>
@@ -134,12 +194,6 @@
 	<div class={tw`w-full flex flex-row w-[80vw] h-3/5 mt-4`}>
 		<div id="canvasParent" class={tw`w-1/2 text(center) flex items-start`}>
 			<div id="canvasEditor" class={tw`w-full h-full`} />
-			<!-- <p class={tw`absolute top-0 z-20`}>{title}</p>
-			<p class={tw`absolute top-12 z-20`}>{quote}</p>
-			<p class={tw`absolute top-24 z-20`}>{nickname}</p>
-			<p class={tw`absolute top-36 z-20 whitespace-pre-line`}>{details}</p>
-			<img class={tw`absolute top-0 z-10`} id="person" height="300" alt="" />
-			<img class={tw`absolute top-0`} id="background" height="300" alt="" /> -->
 		</div>
 		<div class={tw`w-1/2 pl-4 flex-col items-start`}>
 			<div class={tw`my-2`}>
@@ -165,21 +219,21 @@
 				</div>
 			</div>
 			<div class={tw`my-2`}>
-				รายการแข่ง : <input
+				รายการแข่ง <input
 					type="text"
 					bind:value={title}
 					class={tw`mt-1 p-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md`}
 				/>
 			</div>
 			<div class={tw`my-2`}>
-				คำคม : <input
-					type="text"
+				คำคม <textarea
 					bind:value={quote}
 					class={tw`mt-1 p-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md`}
+					rows="4"
 				/>
 			</div>
 			<div class={tw`my-2`}>
-				ชื่อเล่น : <input
+				ชื่อเล่น <input
 					type="text"
 					bind:value={nickname}
 					class={tw`mt-1 p-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md`}
@@ -203,4 +257,21 @@
 </main>
 
 <style>
+	@font-face {
+		font-family: 'ThaiSansNeue';
+		font-style: normal;
+		font-weight: normal;
+		src: url('../../static/fonts/ThaiSansNeue-Regular.otf') format('opentype');
+	}
+
+	@font-face {
+		font-family: 'ThaiSansNeue';
+		font-style: normal;
+		font-weight: bold;
+		src: url('../../static/fonts/ThaiSansNeue-Bold.otf') format('opentype');
+	}
+
+	* {
+		font-family: 'ThaiSansNeue';
+	}
 </style>
