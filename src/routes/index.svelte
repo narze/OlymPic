@@ -328,11 +328,12 @@
 <main class={tw`h-screen flex flex-col items-center mt-8`}>
   <h1 class={tw`text(6xl) my-2`}>OlymPic</h1>
   <p>Generate รูปคำคมแบบเด็กโอลิมปิควิชาการ</p>
-  <div class={tw`w-full flex flex-row w-[80vw] h-3/5 mt-4`}>
-    <div id="canvasParent" class={tw`w-1/2 text(center) flex items-start`}>
+  <div class={tw`w-full flex flex-col lg:flex-row w-[96vw] lg:w-[80vw] h-3/5 mt-4`}>
+    <div id="canvasParent" class={tw`w-full lg:w-1/2 text(center) flex items-start mb-4`}>
       <div id="canvasEditor" class={tw`w-full h-full`} />
     </div>
-    <div class={tw`w-1/2 pl-4 flex-col items-start`}>
+
+    <div class={tw`w-full lg:w-1/2 pl-0 lg:pl-4 flex-col items-start`}>
       <div class={tw`mb-2`}>
         <label class="block text-lg text-gray-700" for="background">รูปพื้นหลัง</label>
         <div class="mt-1 flex">
@@ -390,7 +391,7 @@
         />
       </div>
 
-      <div class={tw`mt-4`}>
+      <div class={tw`mt-4 mb-20 lg:mb-0`}>
         <button
           class={tw`w-full py-4 px-8 rounded bg-gray-300 text-2xl font-bold`}
           on:click={() => download()}>เซฟรูป</button
