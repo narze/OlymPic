@@ -7,11 +7,13 @@
   import defaultBackground from '../../static/background.jpg';
   import defaultPerson from '../../static/person.png';
 
+  const DOWNLOAD_DIMENSION = 800;
+
   const url = 'https://olym-pic.vercel.app';
 
   const sceneWidth = 1080;
   const sceneHeight = 1080;
-  let stage;
+  let stage: Konva.Stage;
   let previewImage: (event: Event, imageId: 'background' | 'person') => void;
   let previewText: (newText: string, textType: 'title' | 'quote' | 'nickname' | 'details') => void;
   let updateOpacity: (opacity: number) => void;
@@ -307,7 +309,10 @@
     detailsTextTr.hide();
     personImageTr.hide();
 
-    const dataURL = stage.toDataURL({ pixelRatio: 3 });
+    const dataURL = stage.toDataURL({
+      pixelRatio: (1 / stage.width()) * DOWNLOAD_DIMENSION,
+      mimeType: 'image/jpeg',
+    });
     downloadURI(dataURL, 'OlymPic-download');
 
     setTimeout(() => {
