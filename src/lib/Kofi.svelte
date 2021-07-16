@@ -9,7 +9,7 @@
   onMount(() => {
     mounted = true;
     // if (kofiReady) {
-    loadKofiWidget();
+    setTimeout(() => loadKofiWidget(), 1000);
     // }
   });
 
@@ -22,7 +22,7 @@
   }
 
   function loadKofiWidget() {
-    window.kofiWidgetOverlay.draw(
+    window.kofiWidgetOverlay?.draw(
       name,
       {
         type: 'floating-chat',
