@@ -92,6 +92,20 @@
     const layer = new Konva.Layer({ fill: '#eeeeee' });
     stage.add(layer);
 
+    // Static Background
+    const background = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: stage.width(),
+      height: stage.height(),
+      fill: 'white',
+      zOffset: -1,
+      // remove background from hit graph for better perf
+      // because we don't need any events on the background
+      listening: false,
+    });
+    layer.add(background);
+
     // Background image
     backgroundImage = new Konva.Image({
       image: undefined as any,
@@ -294,7 +308,7 @@
     personImageTr.hide();
 
     const dataURL = stage.toDataURL({ pixelRatio: 3 });
-    downloadURI(dataURL, 'OlymPic-download.jpg');
+    downloadURI(dataURL, 'OlymPic-download');
 
     setTimeout(() => {
       titleTextTr.show();
