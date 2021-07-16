@@ -7,8 +7,6 @@
   import defaultBackground from '../../static/background.jpg';
   import defaultPerson from '../../static/person.png';
 
-  const DOWNLOAD_DIMENSION = 800;
-
   const url = 'https://olym-pic.vercel.app';
 
   const sceneWidth = 1080;
@@ -293,6 +291,24 @@
   $: previewText?.(details, 'details');
   $: updateOpacity?.(bgOpacity);
 
+  const eventResizeOnExport = () => {
+    // reset scale to 1
+    const container = document.getElementById('canvasParent');
+    const c_width = container.offsetWidth;
+    const scale = c_width / sceneWidth;
+    stage!.width(sceneWidth);
+    stage!.height(sceneHeight);
+    stage.scale({ x: 1, y: 1 });
+
+    // restore scale
+    setTimeout(() => {
+      console.log(scale);
+      stage!.width(sceneWidth * scale);
+      stage!.height(sceneHeight * scale);
+      stage.scale( {x: scale, y: scale });
+    }, 100);
+  }
+
   function downloadURI(uri, name) {
     const link = document.createElement('a');
     link.download = name;
@@ -303,6 +319,7 @@
   }
 
   function download() {
+    eventResizeOnExport();
     titleTextTr.hide();
     quoteTextTr.hide();
     nameTextTr.hide();
@@ -310,7 +327,6 @@
     personImageTr.hide();
 
     const dataURL = stage.toDataURL({
-      pixelRatio: (1 / stage.width()) * DOWNLOAD_DIMENSION,
       mimeType: 'image/jpeg',
     });
     downloadURI(dataURL, 'OlymPic-download');
