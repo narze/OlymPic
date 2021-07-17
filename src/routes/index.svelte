@@ -309,7 +309,6 @@
 
     // restore scale
     setTimeout(() => {
-      console.log(scale);
       stage!.width(sceneWidth * scale);
       stage!.height(sceneHeight * scale);
       stage.scale({ x: scale, y: scale });
