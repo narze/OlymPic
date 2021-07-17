@@ -15,6 +15,7 @@
   const sceneWidth = 1080;
   const sceneHeight = 1080;
   let stage: Konva.Stage;
+  let usePresetBackgroundImage: (image: string) => void;
   let previewImage: (event: Event, imageId: 'background' | 'person') => void;
   let previewText: (newText: string, textType: 'title' | 'quote' | 'nickname' | 'details') => void;
   let updateOpacity: (opacity: number) => void;
@@ -252,6 +253,9 @@
       const switcher = imageId === 'background' ? backgroundSwitcher : personSwitcher;
       switcher.switchImage(url);
     };
+    usePresetBackgroundImage = (image: string) => {
+      backgroundSwitcher.switchImage(image);
+    };
     previewText = (newText, textType) => {
       if (textType === 'title') {
         const textShape = titleText;
@@ -353,32 +357,55 @@
     </div>
 
     <div class={tw`w-full lg:w-1/2 pl-0 lg:pl-4 flex-col items-start`}>
+      <div class={tw`my-2`}>
+        ใช้พื้นหลังจาก<a
+          href="https://www.facebook.com/permalink.php?story_fbid=4162146883854761&id=486688764733943"
+          target="_blank"
+          rel="noreferrer"
+          class="text-bold underline">เพจ Olympic สสวท.</a
+        >
+        <button
+          on:click={() => usePresetBackgroundImage(greenBackground)}
+          class={tw`bg-green-200 border rounded px-4 py-1 ml-1`}>สีเขียว</button
+        >
+        <button
+          on:click={() => usePresetBackgroundImage(blueBackground)}
+          class={tw`bg-blue-200 border rounded px-4 py-1 ml-1`}>สีฟ้า</button
+        >
+        <button
+          on:click={() => usePresetBackgroundImage(orangeBackground)}
+          class={tw`bg-yellow-500 border rounded px-4 py-1 ml-1`}>สีส้ม</button
+        >
+        <button
+          on:click={() => usePresetBackgroundImage(grayBackground)}
+          class={tw`bg-gray-200 border rounded px-4 py-1 ml-1`}>สีเทา</button
+        >
+      </div>
       <div class={tw`mb-2`}>
-        <label class="block text-lg text-gray-700" for="background">รูปพื้นหลัง</label>
-        <div class="mt-1 flex">
+        <label class="block text-lg text-gray-700" for="background"
+          >หรือ อัปโหลดรูปพื้นหลังเอง
           <input
             type="file"
             id="background"
             accept="image/*"
             on:change={(event) => previewImage(event, 'background')}
             class={tw`text-base`}
-          />
-        </div>
+          /></label
+        >
       </div>
       <div class={tw`my-2`}>
         พื้นหลังโปร่งใส <input type="range" min="0" max="1" bind:value={bgOpacity} step="0.01" />
       </div>
       <div class={tw`my-2`}>
-        <label class="block text-lg text-gray-700" for="person">รูปคน</label>
-        <div class="mt-1 flex">
-          <input
+        <label class="block text-lg text-gray-700" for="person"
+          >รูปคน <input
             type="file"
             id="person"
             accept="image/*"
             on:change={(event) => previewImage(event, 'person')}
             class={tw`text-base`}
-          />
-        </div>
+          /></label
+        >
         <div class={tw`text-gray-500`}>
           หากต้องการลบพื้นหลัง ให้ใช้เว็บ <a
             href="https://remove.bg"
