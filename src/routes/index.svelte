@@ -12,6 +12,8 @@
   const sceneWidth = 1080;
   const sceneHeight = 1080;
   let stage: Konva.Stage;
+  let exportStage: Konva.Stage;
+  let layer: Konva.Layer;
   let previewImage: (event: Event, imageId: 'background' | 'person') => void;
   let previewText: (newText: string, textType: 'title' | 'quote' | 'nickname' | 'details') => void;
   let updateOpacity: (opacity: number) => void;
@@ -89,7 +91,7 @@
       height: sceneHeight,
     });
 
-    const layer = new Konva.Layer({ fill: '#eeeeee' });
+    layer = new Konva.Layer({ fill: '#eeeeee' });
     stage.add(layer);
 
     // Static Background
@@ -276,6 +278,13 @@
       layer.batchDraw();
     };
     eventResizeHandler();
+
+    exportStage = new Konva.Stage({
+      container: 'export',
+      width: sceneWidth,
+      height: sceneHeight,
+      scale: { x: 1, y: 1 },
+    });
   });
 
   let title: string = 'International Meme Olympiad (IMO2021)';
@@ -291,23 +300,6 @@
   $: previewText?.(details, 'details');
   $: updateOpacity?.(bgOpacity);
 
-  const eventResizeOnExport = () => {
-    // reset scale to 1
-    const container = document.getElementById('canvasParent');
-    const c_width = container.offsetWidth;
-    const scale = c_width / sceneWidth;
-    stage!.width(sceneWidth);
-    stage!.height(sceneHeight);
-    stage.scale({ x: 1, y: 1 });
-
-    // restore scale
-    setTimeout(() => {
-      stage!.width(sceneWidth * scale);
-      stage!.height(sceneHeight * scale);
-      stage.scale({ x: scale, y: scale });
-    }, 100);
-  };
-
   function downloadURI(uri, name) {
     const link = document.createElement('a');
     link.download = name;
@@ -318,14 +310,15 @@
   }
 
   function download() {
-    eventResizeOnExport();
     titleTextTr.hide();
     quoteTextTr.hide();
     nameTextTr.hide();
     detailsTextTr.hide();
     personImageTr.hide();
+    const exportLayer = layer.clone({ listening: false });
+    exportStage.add(exportLayer);
 
-    const dataURL = stage.toDataURL({
+    const dataURL = exportStage.toDataURL({
       mimeType: 'image/jpeg',
     });
     downloadURI(dataURL, 'OlymPic-download');
@@ -450,6 +443,7 @@
       </svg>
     </a>
   </div>
+  <div id="export" class={tw`hidden`} />
 </main>
 
 <Kofi name="narze" />
