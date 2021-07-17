@@ -4,7 +4,10 @@
   import Konva from 'konva';
   import { Facebook, Twitter } from 'svelte-share-buttons-component';
   import Kofi from '../lib/Kofi.svelte';
-  import defaultBackground from '../../static/background.jpg';
+  import greenBackground from '../../static/green.jpg';
+  import blueBackground from '../../static/blue.jpg';
+  import orangeBackground from '../../static/orange.jpg';
+  import grayBackground from '../../static/gray.jpg';
   import defaultPerson from '../../static/person.png';
 
   const url = 'https://olym-pic.vercel.app';
@@ -114,7 +117,7 @@
     });
     layer.add(backgroundImage);
     const backgroundSwitcher = new ImageSwitcher(backgroundImage, layer);
-    backgroundSwitcher.switchImage(defaultBackground);
+    backgroundSwitcher.switchImage(greenBackground);
 
     // Person image
     const personImage = new Konva.Image({
@@ -283,7 +286,7 @@
   let nickname: string = 'จอห์น';
   let details: string =
     'นายจอห์น ชาวไร่\nโรงเรียนมัธยมหมีใหญ่\nผู้แทนประเทศไทย\nวิชาลูุกเสือสามัญประจำบ้าน\nประจำปี 2564';
-  let bgOpacity: number = 0.5;
+  let bgOpacity: number = 1.0;
 
   $: previewText?.(title, 'title');
   $: previewText?.(`"${quote}"`, 'quote');
@@ -305,9 +308,9 @@
       console.log(scale);
       stage!.width(sceneWidth * scale);
       stage!.height(sceneHeight * scale);
-      stage.scale( {x: scale, y: scale });
+      stage.scale({ x: scale, y: scale });
     }, 100);
-  }
+  };
 
   function downloadURI(uri, name) {
     const link = document.createElement('a');
