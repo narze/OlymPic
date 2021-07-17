@@ -283,6 +283,7 @@
       container: 'export',
       width: sceneWidth,
       height: sceneHeight,
+      scale: { x: 1, y: 1 },
     });
   });
 
@@ -309,15 +310,15 @@
   }
 
   function download() {
-    const exportLayer = layer.clone({ listening: false });
-    exportStage.add(exportLayer);
     titleTextTr.hide();
     quoteTextTr.hide();
     nameTextTr.hide();
     detailsTextTr.hide();
     personImageTr.hide();
+    const exportLayer = layer.clone({ listening: false });
+    exportStage.add(exportLayer);
 
-    const dataURL = stage.toDataURL({
+    const dataURL = exportStage.toDataURL({
       mimeType: 'image/jpeg',
     });
     downloadURI(dataURL, 'OlymPic-download');
